@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext } from "react";
+import { Routes, Route } from "react-router-dom";
+import Landing from "./components/Landing.jsx";
+import NavBar from "./components/ResponsiveAppBar;.jsx";
+import Product from "./components/products/Product.jsx";
+import Company from "./components/company/Company.jsx";
+import Login from "./page/login.jsx";
+import { AuthContext } from "../src/context/authContext.js";
 
 function App() {
+  const { user } = useContext(AuthContext);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <NavBar user={user}/>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route
+          path="/login"
+          element={user ? <h2>{user.email} is logged in</h2> : <Login />}
+        />
+        <Route path="/productos" element={<Product />} />
+        <Route path="/empresas" element={<Company />} />
+        <Route path="/inventario" element={<Landing />} />
+      </Routes>
     </div>
   );
 }

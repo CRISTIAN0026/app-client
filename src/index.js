@@ -1,14 +1,22 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import client from "./apolloClient";
+import { ApolloProvider } from "@apollo/client";
+import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "./context/authContext";
+import reportWebVitals from './reportWebVitals.js';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <AuthProvider>
+    <BrowserRouter>
+    <ApolloProvider client={client}>
+        <App />
+        </ApolloProvider> 
+    </BrowserRouter>
+</AuthProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function
