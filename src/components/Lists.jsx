@@ -53,10 +53,6 @@ export default function List({ rows, table, AlertDialog, user, acciones }) {
               <StyledTableCell align="right">{row.nit}</StyledTableCell>
               <StyledTableCell align="right">{row.address}</StyledTableCell>
               <StyledTableCell align="right">{row.phone}</StyledTableCell>
-              {acciones === "Empresas" && user?.email === "admin@example.com" ? <StyledTableCell align="right">
-                <Button >Eliminar</Button>
-                <AlertDialog row={row}/> 
-              </StyledTableCell> : <StyledTableCell align="right">Ninguna</StyledTableCell>}
             </StyledTableRow>
           ))}
                   {acciones === "Productos" && rows?.map((row) => (
@@ -70,7 +66,7 @@ export default function List({ rows, table, AlertDialog, user, acciones }) {
           </StyledTableRow>
         ))
         }
-  {acciones === "Productos" && <Button
+  {acciones === "Productos" && rows?.length > 0 && <Button
     onClick={()=> exportPDF(rows)}
     variant="contained"
     sx={{ my: 2,background:"black", color: "#ffe900", display: "block" }}

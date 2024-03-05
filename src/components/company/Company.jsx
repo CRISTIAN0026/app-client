@@ -8,7 +8,7 @@ import { GET_COMPANIES } from "../../utility/queries.js";
 import List from "../Lists.jsx";
 import { AuthContext } from "../../context/authContext.js";
 
-const listTable = ["Nombre", "Nit", "Dirección", "Teléfono", "Acciones"]
+const listTable = ["Nombre", "Nit", "Dirección", "Teléfono"]
 
 export default function Company() {
   const { user } = useContext(AuthContext);
