@@ -15,7 +15,7 @@ import AdbIcon from "@mui/icons-material/Adb";
 import { AuthContext } from "../context/authContext.js";
 import { useNavigate } from "react-router-dom";
 
-const pages = ["Productos", "Empresas", "Inventario"];
+const pages = ["Productos", "Empresas"];
 const settings = ["Logout"];
 
 function ResponsiveAppBar() {

@@ -86,7 +86,7 @@ export default function Form() {
 
   const [registerProduct] = useMutation(POST_PRODUCT, {
     update(proxy, { data: { registerProduct: userData } }) {
-      // navigate("/productos");
+      navigate("/productos");
     },
     onError({ graphQLErrors }) {
       setErrors(graphQLErrors);

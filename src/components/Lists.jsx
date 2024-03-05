@@ -31,8 +31,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function List({ rows, table, AlertDialog, user, acciones }) {
 
-
-console.log(rows);
   return (
     <TableContainer component={Paper}>
       <Table aria-label="customized table">

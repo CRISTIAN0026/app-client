@@ -14,17 +14,16 @@ function App() {
   const renderHome = () => user?.email ? <h2>{user?.email} ya inicio sesión </h2> : <Landing />;
   const renderLogin = () => user ? <h2>{user?.email} is logged in</h2> : <Login />;
   const renderProduct = () => user?.email === "admin@example.com" ? <Product /> : <h2>Acceso denegado</h2>;
-  const renderInventory = () => user?.email === "admin@example.com" ? <Product /> : <h2>Acceso denegado</h2>;
 
   return (
     <div className="App">
       <NavBar user={user}/>
       <Routes>
+      <Route path="*" element={renderHome()} />
         <Route path="/" element={renderHome()} />
         <Route path="/login" element={renderLogin()} />
         <Route path="/productos" element={renderProduct()} />
         <Route path="/empresas" element={<Company />} />
-        <Route path="/inventario" element={renderInventory ()} />
       </Routes>
     </div>
   );
