@@ -80,7 +80,7 @@ export default function Form() {
     name: "",
     characteristics: "",
     company: "",
-    prices: [],
+    precies: [],
     category: [],
   });
 
@@ -93,7 +93,7 @@ export default function Form() {
     },
     variables: { input: values },
   });
-  console.log(values, data);
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">

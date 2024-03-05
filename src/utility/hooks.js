@@ -5,7 +5,7 @@ export const useForm = (callback, initialState = {}) => {
 
     const onChange = (event,  key) => {
         if(typeof event === "object" && key === "object"){
-            setValues({...values, prices: [...values.prices, event]})
+            setValues({...values, precies: [...values.precies, event]})
         }else if(key ==="array") {
             setValues({...values, category: event})
         }else {
@@ -14,7 +14,6 @@ export const useForm = (callback, initialState = {}) => {
     }
 
     const onSubmit =  (event) => {
-        console.log(event)
         event.preventDefault();
         callback()
         setTimeout(function() {
