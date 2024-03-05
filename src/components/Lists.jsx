@@ -66,7 +66,7 @@ export default function List({ rows, table, AlertDialog, user, acciones }) {
           </StyledTableRow>
         ))
         }
-  {acciones === "Productos" && rows?.length > 0 && <Button
+  {acciones === "Productos" && <Button
     onClick={()=> exportPDF(rows)}
     variant="contained"
     sx={{ my: 2,background:"black", color: "#ffe900", display: "block" }}
