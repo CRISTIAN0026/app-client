@@ -83,8 +83,8 @@ export const POST_PRODUCT = gql`
       characteristics
       code
       category {
-        name
-      }
+   name
+ }
       company {
         _id
       }

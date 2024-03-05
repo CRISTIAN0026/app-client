@@ -2,32 +2,19 @@ import { useState } from "react";
 
 export const useForm = (callback, initialState = {}) => {
     const [values, setValues] = useState(initialState);
-    const [precie, setPrecie] = useState("");
-    const [currency, setCurrency] = useState("");
 
-    const onChange = (event) => {
-        setValues({ ...values, [event.target.name]: event.target.value});
-        if(event.target.name === 'precies') {
-            setValues({ ...values, precies: [...values.precies, {precie: event.target.value.precie, currency: event.target.value.currency}]});
-        }else if(event.target.name === 'category') {
-            setValues({ ...values, category: [...values.category, event.target.value]});
-        } else if(event.target.name === 'precie') {
-            setPrecie(event.target.value);
-        } else if(event.target.name === 'currency') {
-            setCurrency(event.target.value);
-        } else {
+    const onChange = (event,  key) => {
+        if(typeof event === "object" && key === "object"){
+            setValues({...values, prices: [...values.prices, event]})
+        }else if(key ==="array") {
+            setValues({...values, category: event})
+        }else {
             setValues({ ...values, [event.target.name]: event.target.value});
         }
     }
 
-
-    const addPrecie = () => {
-        setValues({ ...values, precies: [...values.precies, {precie, currency}]});
-        setPrecie("");
-        setCurrency("");
-    }
-
-    const onSubmit = (event) => {
+    const onSubmit =  (event) => {
+        console.log(event)
         event.preventDefault();
         callback()
         setTimeout(function() {
@@ -36,7 +23,6 @@ export const useForm = (callback, initialState = {}) => {
     }
 
     return {
-        addPrecie,
         onChange,
         onSubmit,
         values

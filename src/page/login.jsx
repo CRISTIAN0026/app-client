@@ -23,7 +23,7 @@ function Login() {
     const [loginUser] = useMutation(LOGIN_USER, {
         update(proxy, { data: { loginUser: userData}}) {
             context.login(userData);
-            navigate("/");
+            navigate("/empresas");
         },
         onError({ graphQLErrors }) {
             setErrors(graphQLErrors)

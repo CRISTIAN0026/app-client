@@ -29,12 +29,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function List({ rows, table, AlertDialog }) {
-  const [data, setData] = React.useState(rows);
-  const [editMode, setEditMode] = React.useState(false);
+export default function List({ rows, table, AlertDialog, user, acciones }) {
 
 
-
+console.log(rows);
   return (
     <TableContainer component={Paper}>
       <Table aria-label="customized table">
@@ -48,7 +46,7 @@ export default function List({ rows, table, AlertDialog }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows?.map((row) => (
+          {acciones === "Empresas" && rows?.map((row) => (
             <StyledTableRow key={row.name}>
               <StyledTableCell component="th" scope="row">
                 {row.name}
@@ -56,12 +54,23 @@ export default function List({ rows, table, AlertDialog }) {
               <StyledTableCell align="right">{row.nit}</StyledTableCell>
               <StyledTableCell align="right">{row.address}</StyledTableCell>
               <StyledTableCell align="right">{row.phone}</StyledTableCell>
-              <StyledTableCell align="right">
+              {acciones === "Empresas" && user?.email === "admin@example.com" ? <StyledTableCell align="right">
                 <Button >Eliminar</Button>
                 <AlertDialog row={row}/> 
-              </StyledTableCell>
+              </StyledTableCell> : <StyledTableCell align="right">Ninguna</StyledTableCell>}
             </StyledTableRow>
           ))}
+                  {acciones === "Productos" && rows?.map((row) => (
+          <StyledTableRow key={row.name}>
+            <StyledTableCell component="th" scope="row">
+              {row.code}
+            </StyledTableCell>
+            <StyledTableCell align="right">{row.name}</StyledTableCell>
+            <StyledTableCell align="right">{row.characteristics}</StyledTableCell>
+            <StyledTableCell align="right">{row.company.name}</StyledTableCell>
+          </StyledTableRow>
+        ))
+        }
         </TableBody>
       </Table>
     </TableContainer>

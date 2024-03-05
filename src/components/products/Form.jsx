@@ -12,62 +12,88 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import DeleteIcon from "@mui/icons-material/Delete";
 import Select from "@mui/material/Select";
+import { Alert } from "@mui/material";
 import { useQuery, useMutation } from "@apollo/client";
 import {
   GET_CATEGORY,
-  POST_PRODUCT,
   GET_COMPANIES_PRODUCT,
+  POST_PRODUCT,
 } from "../../utility/queries.js";
+import { useForm } from "../../utility/hooks.js";
+import { useNavigate } from "react-router-dom";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const defaultTheme = createTheme();
 
 export default function Form() {
-  const [product, setProduct] = useState({
+  let navigate = useNavigate();
+  const { data: dataCategory } = useQuery(GET_CATEGORY);
+  const { data: dataCompaniesProduct } = useQuery(GET_COMPANIES_PRODUCT);
+  const [errors, setErrors] = useState([]);
+  const [number, setNumber] = useState("");
+  const [currency, setCurrency] = useState("");
+  const [data, setData] = useState([]);
+  const [selectedOption, setSelectedOption] = useState("");
+  const [disabledOptions, setDisabledOptions] = useState([]);
+
+  const handleChange = (event) => {
+    const selectedValue = event.target.value;
+    setSelectedOption(selectedValue);
+    setDisabledOptions([...disabledOptions, selectedValue]);
+    onChange([...disabledOptions, selectedValue], "array");
+  };
+
+  const handleChangeNumber = (event) => {
+    setNumber(event.target.value);
+  };
+
+  const handleChangeCurrency = (event) => {
+    setCurrency(event.target.value);
+  };
+
+  const handleAddButtonClick = () => {
+    if (!number || !currency) {
+      return alert("Agregue el precio y la moneda");
+    }
+    const newData = {
+      price: parseInt(number),
+      currency: currency,
+    };
+    onChange(newData, "object");
+    setData([...data, newData]);
+    setNumber("");
+    setCurrency("");
+  };
+
+  const handleDeleteButtonClick = (index) => {
+    const newData = [...data];
+    newData.splice(index, 1);
+    setData(newData);
+  };
+
+  function registerProductCallback() {
+    registerProduct();
+  }
+  const { onChange, onSubmit, values } = useForm(registerProductCallback, {
     code: "",
     name: "",
     characteristics: "",
     company: "",
+    prices: [],
+    category: [],
   });
-
-  console.log(product);
-  const { data: dataCategory } = useQuery(GET_CATEGORY);
-  const { data: dataCompaniesProduct } = useQuery(GET_COMPANIES_PRODUCT);
-
-  const [precies, setPrecies] = useState([{ precie: "", currency: "" }]);
-  const [category, setCategory] = useState([]);
-  const handleChange = (event) => {
-    setProduct({
-      ...product,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  const handlePreciesChange = (event, index) => {
-    const newPrecies = [...precies];
-    if (!newPrecies[index]) {
-      newPrecies[index] = {};
-    }
-    newPrecies[index][event.target.name] = event.target.value;
-    setPrecies(newPrecies);
-  };
-
-  const handleCategoryChange = (event) => {
-    setCategory([...category, event.target.value]);
-  };
 
   const [registerProduct] = useMutation(POST_PRODUCT, {
-    variables: { input: { ...product, precies, category } },
+    update(proxy, { data: { registerProduct: userData } }) {
+      // navigate("/productos");
+    },
+    onError({ graphQLErrors }) {
+      setErrors(graphQLErrors);
+    },
+    variables: { input: values },
   });
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Aquí puedes hacer la llamada al backend para enviar los datos
-    registerProduct();
-    console.log({ ...product, precies, category });
-  };
-
+  console.log(values, data);
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -86,12 +112,7 @@ export default function Form() {
           <Typography component="h1" variant="h5">
             Producto
           </Typography>
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{ mt: 3 }}
-          >
+          <Box component="form" noValidate onSubmit={onSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -101,7 +122,7 @@ export default function Form() {
                   fullWidth
                   id="code"
                   label="Código"
-                  onChange={handleChange}
+                  onChange={onChange}
                   autoFocus
                 />
               </Grid>
@@ -110,7 +131,7 @@ export default function Form() {
                   required
                   fullWidth
                   id="name"
-                  onChange={handleChange}
+                  onChange={onChange}
                   label="Nombre del producto"
                   name="name"
                   autoComplete="family-name"
@@ -121,7 +142,7 @@ export default function Form() {
                   required
                   fullWidth
                   id="characteristics"
-                  onChange={handleChange}
+                  onChange={onChange}
                   label="Caracteristicas"
                   name="characteristics"
                   autoComplete="email"
@@ -134,9 +155,10 @@ export default function Form() {
                   name="precies"
                   label="Precio"
                   type="number"
+                  value={number}
                   id="precies"
                   autoComplete="new-password"
-                  onChange={handlePreciesChange}
+                  onChange={handleChangeNumber}
                 />
               </Grid>
               <Grid item xs={6} ms={6}>
@@ -146,8 +168,9 @@ export default function Form() {
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     name="currency"
+                    value={currency}
                     label="Moneda"
-                    onChange={handlePreciesChange}
+                    onChange={handleChangeCurrency}
                   >
                     <MenuItem value={"USD"}>USD</MenuItem>
                     <MenuItem value={"EUR"}>EUR</MenuItem>
@@ -155,7 +178,35 @@ export default function Form() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} ms={6}></Grid>
+              <Grid item xs={12}>
+                <Button variant="contained" onClick={handleAddButtonClick}>
+                  Agregar
+                </Button>
+              </Grid>
+              {data.map((item, index) => (
+                <Grid
+                  key={index}
+                  item
+                  xs={12}
+                  style={{
+                    backgroundColor: "#f0f0f0",
+                    padding: "10px",
+                    marginBottom: "5px",
+                  }}
+                >
+                  <p>
+                    Moneda: {item.currency}, Precio: {item.price}
+                  </p>
+                  <Button
+                    variant="outlined"
+                    startIcon={<DeleteIcon />}
+                    onClick={() => handleDeleteButtonClick(index)}
+                  >
+                    Eliminar
+                  </Button>
+                </Grid>
+              ))}
+
               <Grid item xs={12} ms={6}>
                 <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-label">
@@ -164,12 +215,16 @@ export default function Form() {
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    name="category"
-                    label="category"
-                    onChange={handleCategoryChange}
+                    disabled={values?.category?.length > 5}
+                    value={selectedOption}
+                    onChange={handleChange}
                   >
                     {dataCategory?.getAllCategory?.map(({ name, _id }) => (
-                      <MenuItem key={_id} value={_id}>
+                      <MenuItem
+                        key={_id}
+                        value={_id}
+                        disabled={disabledOptions.includes(_id)}
+                      >
                         {name}
                       </MenuItem>
                     ))}
@@ -186,7 +241,8 @@ export default function Form() {
                     id="demo-simple-select"
                     label="Empresa"
                     name="company"
-                    onChange={handleChange}
+                    disabled={values?.company?.length > 0}
+                    onChange={onChange}
                   >
                     {dataCompaniesProduct?.getAllCompanies?.map(
                       ({ name, _id }) => (
@@ -213,6 +269,14 @@ export default function Form() {
               Crear
             </Button>
           </Box>
+          {errors?.map((error) => {
+            console.log(error);
+            return (
+              <Alert severity="error" key={error.message}>
+                {error.message}
+              </Alert>
+            );
+          })}
         </Box>
       </Container>
     </ThemeProvider>
