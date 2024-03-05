@@ -70,13 +70,13 @@ export default function List({ rows, table, AlertDialog, user, acciones }) {
           </StyledTableRow>
         ))
         }
-  <Button
+  {acciones === "Productos" && <Button
     onClick={()=> exportPDF(rows)}
     variant="contained"
     sx={{ my: 2,background:"black", color: "#ffe900", display: "block" }}
   >
     Descargar inventario
-  </Button>
+  </Button>}
         </TableBody>
       </Table>
     </TableContainer>
