@@ -8,6 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
+import { exportPDF } from "../utility/exportPDF.js";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -69,6 +70,13 @@ export default function List({ rows, table, AlertDialog, user, acciones }) {
           </StyledTableRow>
         ))
         }
+  <Button
+    onClick={()=> exportPDF(rows)}
+    variant="contained"
+    sx={{ my: 2,background:"black", color: "#ffe900", display: "block" }}
+  >
+    Descargar inventario
+  </Button>
         </TableBody>
       </Table>
     </TableContainer>
